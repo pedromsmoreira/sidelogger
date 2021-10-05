@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -9,17 +10,24 @@ import (
 )
 
 func main() {
-	logger := &loggers.NullLogger{}
-	server := loggers.NewServer(logger)
-	err := server.Start("localhost", "5000")
+	logger, _ := loggers.NewZapLogger()
+	server := loggers.NewServer(loggers.NewLoggerService(logger))
+	err := server.Start("5000")
 
 	if err != nil {
 
 		os.Exit(1)
 	}
 	ss := make(chan os.Signal, 1)
-	signal.Notify(ss, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	logger.PlainInfo("Sidelogger is running. Ctrl-C to exit")
+	signal.Notify(ss, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-ss
-	server.Shutdown()
+	logger.PlainInfo("Sidelogger is terminating!")
+	err = server.Shutdown()
+	if err != nil {
+		logger.PlainError(fmt.Sprintf("Failed to shutdown API server: %v", err))
+	}
+	logger.PlainInfo("Sidelogger terminated!")
+	logger.Close()
 	os.Exit(0)
 }

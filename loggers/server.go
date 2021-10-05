@@ -13,39 +13,53 @@ import (
 type Server struct {
 	app *fiber.App
 	wg  sync.WaitGroup
-	log Logger
+	ls  *LoggerService
 }
 
-func NewServer(log Logger) *Server {
-	// configure middlewares
-	// configure routes
+func NewServer(ls *LoggerService) *Server {
 	app := fiber.New(fiber.Config{
 		ReadTimeout: 5 * time.Second,
 	})
 	app.Use(cors.New())
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello from Sidelogger!")
-	})
+	v1 := app.Group("/v1")
+	v1.Get("/dashboard", monitor.New())
+	v1.Post("/logs", func(c *fiber.Ctx) error {
+		req := new(LogRequest)
+		if err := c.BodyParser(req); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"success": false,
+				"error":   err.Error(),
+			})
+		}
 
-	app.Get("/dashboard", monitor.New())
+		if err := ls.Log(req); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"success": false,
+				"error":   err.Error(),
+			})
+		}
+
+		return c.Status(fiber.StatusCreated).JSON(&fiber.Map{
+			"success": true,
+		})
+	})
 
 	return &Server{
 		app: app,
 		wg:  sync.WaitGroup{},
-		log: log,
+		ls:  ls,
 	}
 }
 
-func (s *Server) Start(address string, port string) error {
+func (s *Server) Start(port string) error {
 	s.wg.Add(1)
 	var err error
 	go func() {
 		defer s.wg.Done()
-
-		err := s.app.Listen(fmt.Sprintf("%v:%v", address, port))
+		err := s.app.Listen(fmt.Sprintf(":%v", port))
 
 		if err != nil {
-			fmt.Errorf("API Server stopped listening due to %v", err)
+			s.ls.SimpleLog(fmt.Sprintf("API Server stopped listening due to %v", err))
 		}
 	}()
 
