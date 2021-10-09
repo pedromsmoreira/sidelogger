@@ -1,0 +1,32 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+filebeat.inputs:
+  - type: docker
+    combine_partial: true
+    containers:
+      # path: "/var/lib/docker/containers/*/*.log"
+      path: "/var/lib/docker/containers"
+      stream: "stdout"
+      ids:
+        - "*"
+    ignore_older: 10m
+
+processors:
+  - add_docker_metadata:
+      host: "unix:///var/run/docker.sock"
+# output.elasticsearch:
+#   hosts: ["http://elasticsearch:9200"]
+#   username: "elastic"
+#   password: "changeme"
+#   indices:
+#     - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+output.logstash:
+  hosts: ["logstash:5044"]

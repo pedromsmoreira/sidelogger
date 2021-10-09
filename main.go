@@ -12,7 +12,7 @@ import (
 func main() {
 	logger, _ := loggers.NewZapLogger()
 	server := loggers.NewServer(loggers.NewLoggerService(logger))
-	err := server.Start("5000")
+	err := server.Start("4000")
 
 	if err != nil {
 

@@ -1,6 +1,7 @@
 package loggers
 
 import (
+	"go.elastic.co/ecszap"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -18,8 +19,8 @@ func NewZapLogger() (*ZapLogger, error) {
 			MessageKey: "message",
 		},
 	}
-
-	logger, _ := cfg.Build()
+	cfg.EncoderConfig = ecszap.ECSCompatibleEncoderConfig(cfg.EncoderConfig)
+	logger, _ := cfg.Build(ecszap.WrapCoreOption(), zap.AddCaller())
 
 	return &ZapLogger{
 		slog: logger.Sugar(),
@@ -39,6 +40,7 @@ func (zl *ZapLogger) Info(message string, platform string, boundary, name string
 		zap.Any("metadata", args),
 	)
 }
+
 func (zl *ZapLogger) Warning(message string, platform string, boundary, name string, args ...interface{}) {
 	zl.slog.Warnw(message,
 		zap.String("eventSeverity", "Warning"),
@@ -48,6 +50,7 @@ func (zl *ZapLogger) Warning(message string, platform string, boundary, name str
 		zap.Any("metadata", args),
 	)
 }
+
 func (zl *ZapLogger) Error(message string, platform string, boundary, name string, args ...interface{}) {
 	zl.slog.Errorw(message,
 		zap.String("eventSeverity", "Error"),
