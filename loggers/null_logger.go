@@ -2,6 +2,10 @@ package loggers
 
 type NullLogger struct{}
 
+func (nl *NullLogger) GetName() string {
+	return "NullLogger"
+}
+
 func (nl *NullLogger) PlainInfo(message string) {
 }
 func (nl *NullLogger) Info(message string, platform string, boundary, name string, args ...interface{}) {

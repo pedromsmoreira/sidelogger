@@ -27,6 +27,10 @@ func NewZapLogger() (*ZapLogger, error) {
 	}, nil
 }
 
+func (zl *ZapLogger) GetName() string {
+	return "zap-logger"
+}
+
 func (zl *ZapLogger) PlainInfo(message string) {
 	zl.slog.Infow(message, zap.String("eventSeverity", "Info"))
 }

@@ -12,6 +12,10 @@ func NewMockLogger() *MockLogger {
 	}
 }
 
+func (ml *MockLogger) GetName() string {
+	return "MockLogger"
+}
+
 func (ml *MockLogger) PlainInfo(message string) {
 	ml.methodCalled = true
 	ml.methodName = "PlainInfo"
