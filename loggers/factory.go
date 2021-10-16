@@ -5,5 +5,14 @@ import (
 )
 
 func CreateLogger(name string) (Logger, error) {
-	return &NullLogger{}, fmt.Errorf("logger with name %v is not implemented", name)
+	switch name {
+	case "uberzap":
+		return NewZapLogger()
+	case "logrus":
+		return NewLogrusLogger()
+	case "apex":
+		return NewApexLogger()
+	default:
+		return &NullLogger{}, fmt.Errorf("logger with name %v is not implemented", name)
+	}
 }
