@@ -4,7 +4,9 @@ import (
 	"fmt"
 )
 
-func CreateLogger(name string) (Logger, error) {
+type LoggerFactory struct{}
+
+func (lf *LoggerFactory) CreateLogger(name string) (Logger, error) {
 	switch name {
 	case "uberzap":
 		return NewZapLogger()

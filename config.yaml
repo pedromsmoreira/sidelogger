@@ -1,0 +1,3 @@
+logger:
+  name: "uberzap" # uberzap, logrus, apex
+  shipper: "filebeat" # filebeat, fluentbit
