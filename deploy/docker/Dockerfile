@@ -17,5 +17,6 @@ RUN go build -o /sidelogger
 FROM ubuntu:focal-20210921 as runtime
 WORKDIR /
 COPY --from=build /sidelogger /sidelogger
+COPY --from=build /app/config.yaml config.yaml
 EXPOSE 5000
 ENTRYPOINT [ "/sidelogger" ]

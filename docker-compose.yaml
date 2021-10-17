@@ -2,14 +2,6 @@ version: "3.8"
 services:
   sidelogger:
     image: sidelogger:${RELEASE_VERSION}
-    labels:
-      co.elastic.logs/json.keys_under_root: true
-      co.elastic.logs/json.overwrite_keys: true
-      co.elastic.logs/json.add_error_key: true
-      co.elastic.logs/json.expand_keys: true
-      co.elastic.logs/module: apache2
-      co.elastic.logs/fileset.stdout: access
-      co.elastic.logs/fileset.stderr: error
     build:
       context: .
       dockerfile: deploy/docker/Dockerfile
@@ -19,8 +11,6 @@ services:
       - elk
     logging:
       driver: fluentd
-      options:
-        tag: sidelogger
 
   elasticsearch:
     build:
@@ -47,16 +37,25 @@ services:
     networks:
       - elk
 
-  fluentbit:
-    build:
-      context: infrastructure/fluentbit/
-    ports:
-      - "24224:24224"
-      - "24224:24224/udp"
-    depends_on:
-      - elasticsearch
-    networks:
-      - elk
+  # fluentbit:
+  #   build:
+  #     context: infrastructure/fluentbit/
+  #   ports:
+  #     - "24224:24224"
+  #     - "24224:24224/udp"
+  #   volumes:
+  #     - type: bind
+  #       source: /var/run/docker.sock
+  #       target: /var/run/docker.sock
+  #       read_only: true
+  #     - type: bind
+  #       source: /var/lib/docker/containers
+  #       target: /var/lib/docker/containers
+  #       read_only: true
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - elk
 
   kibana:
     build:
@@ -75,62 +74,62 @@ services:
     depends_on:
       - elasticsearch
 
-  # logstash:
-  #   build:
-  #     context: infrastructure/logstash/
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   volumes:
-  #     - type: bind
-  #       source: ./infrastructure/logstash/config/logstash.yml
-  #       target: /usr/share/logstash/config/logstash.yml
-  #       read_only: true
-  #     - type: bind
-  #       source: ./infrastructure/logstash/pipeline
-  #       target: /usr/share/logstash/pipeline
-  #       read_only: true
-  #   ports:
-  #     - "5044:5044"
-  #     - "5000:5000/tcp"
-  #     - "5000:5000/udp"
-  #     - "9600:9600"
-  #   environment:
-  #     LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-  #   networks:
-  #     - elk
-  #   depends_on:
-  #     - elasticsearch
+  logstash:
+    build:
+      context: infrastructure/logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./infrastructure/logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./infrastructure/logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
 
-  # filebeat:
-  #   build:
-  #     context: infrastructure/filebeat/
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   user: root
-  #   command:
-  #     # Log to stderr.
-  #     - -e
-  #       # Disable config file permissions checks. Allows mounting
-  #       # 'config/metricbeat.yml' even if it's not owned by root.
-  #       # see: https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
-  #     - --strict.perms=false
-  #   volumes:
-  #     - type: bind
-  #       source: ./infrastructure/filebeat/config/filebeat.yml
-  #       target: /usr/share/filebeat/filebeat.yml
-  #       read_only: true
-  #     - type: bind
-  #       source: /var/run/docker.sock
-  #       target: /var/run/docker.sock
-  #       read_only: true
-  #     - type: bind
-  #       source: /var/lib/docker/containers
-  #       target: /var/lib/docker/containers
-  #       read_only: true
-  #   networks:
-  #     - elk
-  #   depends_on:
-  #     - elasticsearch
+  filebeat:
+    build:
+      context: infrastructure/filebeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    user: root
+    command:
+      # Log to stderr.
+      - -e
+        # Disable config file permissions checks. Allows mounting
+        # 'config/metricbeat.yml' even if it's not owned by root.
+        # see: https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+      - --strict.perms=false
+    volumes:
+      - type: bind
+        source: ./infrastructure/filebeat/config/filebeat.yml
+        target: /usr/share/filebeat/filebeat.yml
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+      - type: bind
+        source: /var/lib/docker/containers
+        target: /var/lib/docker/containers
+        read_only: true
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
 
 networks:
   elk:

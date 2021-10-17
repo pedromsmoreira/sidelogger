@@ -4,12 +4,12 @@ build:
 	@docker-compose build
 
 logging: build
-	@docker-compose up -d elasticsearch kibana fluentbit
+	@docker-compose up -d elasticsearch kibana
 
-filebeat: logging
-	@docker-compose up -d filebeat
+fluentbit: logging
+	@docker-compose up -d fluentbit
 
-run:
+run: fluentbit
 	@docker-compose up -d sidelogger
 
 down:

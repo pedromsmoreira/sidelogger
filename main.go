@@ -11,7 +11,7 @@ import (
 
 func main() {
 	lf := &loggers.LoggerFactory{}
-	cfg, err := loggers.ReadConfigFile("config.yaml")
+	cfg, err := loggers.ReadConfigFile("./config.yaml")
 	if err != nil {
 		fmt.Printf("Error occurred reading config file. Error: %v", err)
 		os.Exit(1)
