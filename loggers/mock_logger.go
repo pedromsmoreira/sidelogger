@@ -21,17 +21,17 @@ func (ml *MockLogger) PlainInfo(message string) {
 	ml.methodName = "PlainInfo"
 }
 
-func (ml *MockLogger) Info(message string, platform string, boundary, name string, args ...interface{}) {
+func (ml *MockLogger) Info(message string, args ...interface{}) {
 	ml.methodCalled = true
 	ml.methodName = "Info"
 }
 
-func (ml *MockLogger) Warning(message string, platform string, boundary, name string, args ...interface{}) {
+func (ml *MockLogger) Warning(message string, args ...interface{}) {
 	ml.methodCalled = true
 	ml.methodName = "Warning"
 }
 
-func (ml *MockLogger) Error(message string, platform string, boundary, name string, args ...interface{}) {
+func (ml *MockLogger) Error(message string, args ...interface{}) {
 	ml.methodCalled = true
 	ml.methodName = "Error"
 }
@@ -41,7 +41,7 @@ func (ml *MockLogger) PlainError(message string) {
 	ml.methodName = "PlainError"
 }
 
-func (ml *MockLogger) Debug(message string, platform string, boundary, name string, args ...interface{}) {
+func (ml *MockLogger) Debug(message string, args ...interface{}) {
 	ml.methodCalled = true
 	ml.methodName = "Debug"
 }

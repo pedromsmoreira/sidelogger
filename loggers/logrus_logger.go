@@ -33,37 +33,28 @@ func (ll *LogrusLogger) PlainInfo(message string) {
 	ll.log.Info(message)
 }
 
-func (ll *LogrusLogger) Info(message string, platform string, boundary, name string, args ...interface{}) {
+func (ll *LogrusLogger) Info(message string, args ...interface{}) {
 	ll.log.WithFields(
 		logrus.Fields{
 			"eventSeverity": "Info",
-			"platform":      platform,
-			"boundary":      boundary,
-			"name":          name,
 			"metadata":      args,
 		},
 	).Info(message)
 }
 
-func (ll *LogrusLogger) Warning(message string, platform string, boundary, name string, args ...interface{}) {
+func (ll *LogrusLogger) Warning(message string, args ...interface{}) {
 	ll.log.WithFields(
 		logrus.Fields{
 			"eventSeverity": "Warning",
-			"platform":      platform,
-			"boundary":      boundary,
-			"name":          name,
 			"metadata":      args,
 		},
 	).Warn(message)
 }
 
-func (ll *LogrusLogger) Error(message string, platform string, boundary, name string, args ...interface{}) {
+func (ll *LogrusLogger) Error(message string, args ...interface{}) {
 	ll.log.WithFields(
 		logrus.Fields{
 			"eventSeverity": "Error",
-			"platform":      platform,
-			"boundary":      boundary,
-			"name":          name,
 			"metadata":      args,
 		},
 	).Error(message)
@@ -73,13 +64,10 @@ func (ll *LogrusLogger) PlainError(message string) {
 	ll.log.Error(message)
 }
 
-func (ll *LogrusLogger) Debug(message string, platform string, boundary, name string, args ...interface{}) {
+func (ll *LogrusLogger) Debug(message string, args ...interface{}) {
 	ll.log.WithFields(
 		logrus.Fields{
 			"eventSeverity": "Debug",
-			"platform":      platform,
-			"boundary":      boundary,
-			"name":          name,
 			"metadata":      args,
 		},
 	).Debug(message)

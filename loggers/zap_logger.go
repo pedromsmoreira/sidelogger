@@ -35,32 +35,23 @@ func (zl *ZapLogger) PlainInfo(message string) {
 	zl.slog.Infow(message, zap.String("eventSeverity", "Info"))
 }
 
-func (zl *ZapLogger) Info(message string, platform string, boundary, name string, args ...interface{}) {
+func (zl *ZapLogger) Info(message string, args ...interface{}) {
 	zl.slog.Infow(message,
 		zap.String("eventSeverity", "Info"),
-		zap.String("platform", platform),
-		zap.String("boundary", boundary),
-		zap.String("name", name),
 		zap.Any("metadata", args),
 	)
 }
 
-func (zl *ZapLogger) Warning(message string, platform string, boundary, name string, args ...interface{}) {
+func (zl *ZapLogger) Warning(message string, args ...interface{}) {
 	zl.slog.Warnw(message,
 		zap.String("eventSeverity", "Warning"),
-		zap.String("platform", platform),
-		zap.String("boundary", boundary),
-		zap.String("name", name),
 		zap.Any("metadata", args),
 	)
 }
 
-func (zl *ZapLogger) Error(message string, platform string, boundary, name string, args ...interface{}) {
+func (zl *ZapLogger) Error(message string, args ...interface{}) {
 	zl.slog.Errorw(message,
 		zap.String("eventSeverity", "Error"),
-		zap.String("platform", platform),
-		zap.String("boundary", boundary),
-		zap.String("name", name),
 		zap.Any("metadata", args),
 	)
 }
@@ -69,12 +60,9 @@ func (zl *ZapLogger) PlainError(message string) {
 	zl.slog.Error(message, zap.String("eventSeverity", "Error"))
 }
 
-func (zl *ZapLogger) Debug(message string, platform string, boundary, name string, args ...interface{}) {
+func (zl *ZapLogger) Debug(message string, args ...interface{}) {
 	zl.slog.Debugw(message,
 		zap.String("eventSeverity", "Info"),
-		zap.String("platform", platform),
-		zap.String("boundary", boundary),
-		zap.String("name", name),
 		zap.Any("metadata", args),
 	)
 }

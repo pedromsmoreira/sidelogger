@@ -3,10 +3,10 @@ package loggers
 type Logger interface {
 	GetName() string
 	PlainInfo(message string)
-	Info(message string, platform string, boundary, name string, args ...interface{})
-	Warning(message string, platform string, boundary, name string, args ...interface{})
-	Error(message string, platform string, boundary, name string, args ...interface{})
+	Info(message string, args ...interface{})
+	Warning(message string, args ...interface{})
+	Error(message string, args ...interface{})
 	PlainError(message string)
-	Debug(message string, platform string, boundary, name string, args ...interface{})
+	Debug(message string, args ...interface{})
 	Close() error
 }

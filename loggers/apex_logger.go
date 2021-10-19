@@ -1,36 +1,73 @@
 package loggers
 
-import "errors"
+import (
+	"os"
+
+	"github.com/apex/log"
+	"github.com/apex/log/handlers/json"
+)
 
 type ApexLogger struct {
+	log *log.Logger
 }
 
 func NewApexLogger() (*ApexLogger, error) {
-	return &ApexLogger{}, nil
+	return &ApexLogger{
+		log: &log.Logger{
+			Handler: json.New(os.Stdout),
+			Level:   log.InfoLevel,
+		},
+	}, nil
 }
 
-func (zl *ApexLogger) GetName() string {
+func (al *ApexLogger) GetName() string {
 	return "apex-logger"
 }
 
-func (zl *ApexLogger) PlainInfo(message string) {
+func (al *ApexLogger) PlainInfo(message string) {
+	al.log.Info(message)
 }
 
-func (zl *ApexLogger) Info(message string, platform string, boundary, name string, args ...interface{}) {
+func (al *ApexLogger) Info(message string, args ...interface{}) {
+	al.log.WithFields(
+		log.Fields{
+			"eventSeverity": "Info",
+			"metadata":      args,
+		},
+	).Info(message)
 }
 
-func (zl *ApexLogger) Warning(message string, platform string, boundary, name string, args ...interface{}) {
+func (al *ApexLogger) Warning(message string, args ...interface{}) {
+	al.log.WithFields(
+		log.Fields{
+			"eventSeverity": "Warning",
+			"metadata":      args,
+		},
+	).Warn(message)
 }
 
-func (zl *ApexLogger) Error(message string, platform string, boundary, name string, args ...interface{}) {
+func (al *ApexLogger) Error(message string, args ...interface{}) {
+	al.log.WithFields(
+		log.Fields{
+			"eventSeverity": "Error",
+			"metadata":      args,
+		},
+	).Error(message)
 }
 
-func (zl *ApexLogger) PlainError(message string) {
+func (al *ApexLogger) PlainError(message string) {
+	al.log.Error(message)
 }
 
-func (zl *ApexLogger) Debug(message string, platform string, boundary, name string, args ...interface{}) {
+func (al *ApexLogger) Debug(message string, args ...interface{}) {
+	al.log.WithFields(
+		log.Fields{
+			"eventSeverity": "Debug",
+			"metadata":      args,
+		},
+	).Debug(message)
 }
 
-func (zl *ApexLogger) Close() error {
-	return errors.New("failed to close logger")
+func (al *ApexLogger) Close() error {
+	return nil
 }

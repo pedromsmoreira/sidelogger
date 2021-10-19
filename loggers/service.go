@@ -17,32 +17,16 @@ func NewLoggerService(logger Logger) *LoggerService {
 func (ls *LoggerService) Log(request *LogRequest) error {
 	switch fmt.Sprintf("%v", request.LogLevel) {
 	case "Info":
-		ls.logger.Info(request.Message,
-			request.Platform,
-			request.Boundary,
-			request.Name,
-			request.Metadata)
+		ls.logger.Info(request.Message, request.Metadata)
 		return nil
 	case "Warning":
-		ls.logger.Warning(request.Message,
-			request.Platform,
-			request.Boundary,
-			request.Name,
-			request.Metadata)
+		ls.logger.Warning(request.Message, request.Metadata)
 		return nil
 	case "Error":
-		ls.logger.Error(request.Message,
-			request.Platform,
-			request.Boundary,
-			request.Name,
-			request.Metadata)
+		ls.logger.Error(request.Message, request.Metadata)
 		return nil
 	case "Debug":
-		ls.logger.Debug(request.Message,
-			request.Platform,
-			request.Boundary,
-			request.Name,
-			request.Metadata)
+		ls.logger.Debug(request.Message, request.Metadata)
 		return nil
 	default:
 		return fmt.Errorf("LogLevel %v is not available", request.LogLevel)
