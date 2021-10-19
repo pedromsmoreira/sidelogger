@@ -6,6 +6,7 @@ require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/gofiber/fiber/v2 v2.19.0
 	github.com/klauspost/compress v1.13.6 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/fasthttp v1.30.0 // indirect
 	go.elastic.co/ecszap v1.0.1-0.20210922110956-698ab8c60e81
