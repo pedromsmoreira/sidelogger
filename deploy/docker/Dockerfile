@@ -15,6 +15,7 @@ RUN go build -o /sidelogger
 ## Deploy
 ##
 FROM ubuntu:focal-20210921 as runtime
+LABEL org.opencontainers.image.source https://github.com/pedromsmoreira/sidelogger
 WORKDIR /
 COPY --from=build /sidelogger /sidelogger
 COPY --from=build /app/config.yaml config.yaml
