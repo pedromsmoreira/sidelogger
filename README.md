@@ -11,6 +11,13 @@ Logging Stack: ELK
 
 Future Improvements: Switch Filebeat and Logstash with FluentBit
 
+# Use a different logger implementation
+To change the logger implementation it is done with a simple change in the `config.yaml` file.
+```yaml
+logger:
+  name: "logrus" # uberzap, logrus, apex
+```
+
 
 ## What you need to run the PoC
 
